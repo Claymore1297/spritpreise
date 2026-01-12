@@ -160,11 +160,11 @@ public class NavigationActivity extends AppCompatActivity implements OnNavigatio
         }else if(itemId==R.id.nav_settings) {
             intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
-        }else if (itemId==R.id.star_on_github){
+/*        }else if (itemId==R.id.star_on_github){
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse(BuildConfig.GITHUB_URL)));
             prefManager = new AppPreferencesManager(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
-            prefManager.setAskForStar(false);
+            prefManager.setAskForStar(false);*/
         }
     }
 
