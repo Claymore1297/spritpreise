@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.os.ConfigurationCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -40,6 +41,7 @@ import org.woheller69.spritpreise.database.City;
 import org.woheller69.spritpreise.database.SQLiteHelper;
 import org.woheller69.spritpreise.ui.util.AutoSuggestAdapter;
 import org.woheller69.spritpreise.ui.util.geocodingApiCall;
+import org.woheller69.spritpreise.dialogs.AddLocationViewModel;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -48,13 +50,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
 public class AddLocationDialogOmGeocodingAPI extends DialogFragment {
 
     Activity activity;
     View rootView;
     SQLiteHelper database;
     private WebView webview;
+    private AddLocationViewModel viewModel;
 
     private AutoCompleteTextView autoCompleteTextView;
     City selectedCity;
@@ -68,10 +70,6 @@ public class AddLocationDialogOmGeocodingAPI extends DialogFragment {
     String url="https://geocoding-api.open-meteo.com/v1/search?name=";
     String lang="de";
 
-    public AddLocationDialogOmGeocodingAPI() {
-        setRetainInstance(true);
-    }
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -84,6 +82,8 @@ public class AddLocationDialogOmGeocodingAPI extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) dismiss();
+        viewModel = new ViewModelProvider(this)
+                    .get(AddLocationViewModel.class);
     }
 
     @Override
