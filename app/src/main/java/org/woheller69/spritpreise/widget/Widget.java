@@ -118,15 +118,14 @@ public class Widget extends AppWidgetProvider {
         resetView(context, views, city);
 
         if (stations.size()>0) {
-            long time = stations.get(0).getTimestamp();
-            long zoneseconds = TimeZone.getDefault().getOffset(Instant.now().toEpochMilli()) / 1000L;
-            long updateTime = ((time + zoneseconds) * 1000);
-            SimpleDateFormat sdf =
-                new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
-            String dateTime = sdf.format(new Date(updateTime));
+            long timeSeconds = stations.get(0).getTimestamp();
+            long timeMillis = timeSeconds * 1000L; // Sek → Millisekunden
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+            String formattedDateTime = sdf.format(new Date(timeMillis));
             views.setTextViewText(
                 R.id.widget_updatetime,
-                "(" + dateTime + ")"
+                "(" + formattedDateTime + ")"
             );
 
             boolean foundStation = false;
