@@ -7,19 +7,21 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import org.woheller69.spritpreise.database.CityToWatch;
 import org.woheller69.spritpreise.database.Station;
 import org.woheller69.spritpreise.database.SQLiteHelper;
-import org.woheller69.spritpreise.services.UpdateDataService;
+import org.woheller69.spritpreise.services.UpdateDataWorker;
 import org.woheller69.spritpreise.ui.CityFragment;
 import org.woheller69.spritpreise.ui.updater.IUpdateableCityUI;
 
 import java.util.Collections;
 import java.util.List;
 
-import static androidx.core.app.JobIntentService.enqueueWork;
-import static org.woheller69.spritpreise.services.UpdateDataService.SKIP_UPDATE_INTERVAL;
+import static org.woheller69.spritpreise.services.UpdateDataWorker.KEY_SKIP_UPDATE_INTERVAL;
 
 public class CityPagerAdapter extends FragmentStateAdapter implements IUpdateableCityUI {
 
@@ -59,11 +61,19 @@ public class CityPagerAdapter extends FragmentStateAdapter implements IUpdateabl
     }
 
     public static void refreshSingleData(Context context, Boolean asap, int cityId) {
-        Intent intent = new Intent(context, UpdateDataService.class);
-        intent.setAction(UpdateDataService.UPDATE_SINGLE_ACTION);
-        intent.putExtra(SKIP_UPDATE_INTERVAL, asap);
-        intent.putExtra("cityId",cityId);
-        enqueueWork(context, UpdateDataService.class, 0, intent);
+
+        Data data = new Data.Builder()
+            .putInt(UpdateDataWorker.KEY_CITY_ID, cityId)
+            .putBoolean(UpdateDataWorker.KEY_SKIP_UPDATE_INTERVAL, true)
+            .build();
+
+        OneTimeWorkRequest request =
+            new OneTimeWorkRequest.Builder(UpdateDataWorker.class)
+                .setInputData(data)
+                .build();
+
+        WorkManager.getInstance(context).enqueue(request);
+
     }
 
 

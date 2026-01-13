@@ -30,7 +30,7 @@ import org.woheller69.spritpreise.activities.CityGasPricesActivity;
 import org.woheller69.spritpreise.database.CityToWatch;
 import org.woheller69.spritpreise.database.Station;
 import org.woheller69.spritpreise.database.SQLiteHelper;
-import org.woheller69.spritpreise.services.UpdateDataService;
+import org.woheller69.spritpreise.services.UpdateDataWorker;
 import org.woheller69.spritpreise.services.WidgetUpdater;
 import org.woheller69.spritpreise.ui.Help.StringFormatUtils;
 
@@ -42,11 +42,13 @@ import java.util.concurrent.TimeUnit;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
-import static androidx.core.app.JobIntentService.enqueueWork;
 import static org.woheller69.spritpreise.database.SQLiteHelper.getWidgetCityID;
 
-import static org.woheller69.spritpreise.services.UpdateDataService.SKIP_UPDATE_INTERVAL;
+import static org.woheller69.spritpreise.services.UpdateDataWorker.KEY_SKIP_UPDATE_INTERVAL;
 
 public class Widget extends AppWidgetProvider {
     private final static int MINDISTANCE = 5000;
@@ -60,11 +62,18 @@ public class Widget extends AppWidgetProvider {
 
             int cityID = getWidgetCityID(context);
             if(prefManager.getBoolean("pref_GPS", false) && !prefManager.getBoolean("pref_GPS_manual", false)) updateLocation(context, cityID,false);
-            Intent intent = new Intent(context, UpdateDataService.class);
-            intent.setAction(UpdateDataService.UPDATE_SINGLE_ACTION);
-            intent.putExtra("cityId", cityID);
-            intent.putExtra(SKIP_UPDATE_INTERVAL, true);
-            enqueueWork(context, UpdateDataService.class, 0, intent);
+            Data data = new Data.Builder()
+                .putInt(UpdateDataWorker.KEY_CITY_ID, cityID)
+                .putBoolean(UpdateDataWorker.KEY_SKIP_UPDATE_INTERVAL, true)
+                .build();
+
+            OneTimeWorkRequest request =
+                new OneTimeWorkRequest.Builder(UpdateDataWorker.class)
+                    .setInputData(data)
+                    .build();
+
+            WorkManager.getInstance(context).enqueue(request);
+
         }
     }
 

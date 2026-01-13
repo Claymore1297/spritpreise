@@ -62,11 +62,6 @@
             android:name="org.woheller69.spritpreise.firststart.TutorialActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service
-            android:name="org.woheller69.spritpreise.services.UpdateDataService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false" />
-
         <receiver android:name="org.woheller69.spritpreise.widget.Widget"
             android:exported="true">
             <intent-filter>
