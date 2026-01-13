@@ -53,9 +53,11 @@ import org.woheller69.spritpreise.database.SQLiteHelper;
 import org.woheller69.spritpreise.ui.Help.StringFormatUtils;
 import org.woheller69.spritpreise.ui.viewPager.CityPagerAdapter;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -358,11 +360,19 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
             }
 
             if (!stationList.isEmpty()){
-                long time = stationList.get(0).getTimestamp();
-                long zoneseconds = TimeZone.getDefault().getOffset(Instant.now().toEpochMilli()) / 1000L;
-                long updateTime = ((time + zoneseconds) * 1000);
 
-                holder.recyclerViewHeader.setText(String.format("%s (%s)", context.getResources().getString(R.string.card_stations_heading), StringFormatUtils.formatTimeWithoutZone(context, updateTime)));
+                long timeSeconds = stationList.get(0).getTimestamp();
+                long timeMillis = timeSeconds * 1000L; // Sek → Millisekunden
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+                String formattedDateTime = sdf.format(new Date(timeMillis));
+
+                holder.recyclerViewHeader.setText(
+                    String.format("%s (%s)",
+                        context.getResources().getString(R.string.card_stations_heading),
+                        formattedDateTime)
+               );
+
             }
 
         }

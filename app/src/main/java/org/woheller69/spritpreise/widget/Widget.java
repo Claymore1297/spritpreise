@@ -41,7 +41,9 @@ import org.woheller69.spritpreise.services.UpdateDataWorker;
 import org.woheller69.spritpreise.services.WidgetUpdater;
 import org.woheller69.spritpreise.ui.Help.StringFormatUtils;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -119,7 +121,13 @@ public class Widget extends AppWidgetProvider {
             long time = stations.get(0).getTimestamp();
             long zoneseconds = TimeZone.getDefault().getOffset(Instant.now().toEpochMilli()) / 1000L;
             long updateTime = ((time + zoneseconds) * 1000);
-            views.setTextViewText(R.id.widget_updatetime, "("+StringFormatUtils.formatTimeWithoutZone(context, updateTime)+")");
+            SimpleDateFormat sdf =
+                new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+            String dateTime = sdf.format(new Date(updateTime));
+            views.setTextViewText(
+                R.id.widget_updatetime,
+                "(" + dateTime + ")"
+            );
 
             boolean foundStation = false;
             if (prefManager.getBoolean("prefBrands", false)) {  //if preferred brands are defined
