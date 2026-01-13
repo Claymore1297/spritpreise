@@ -55,7 +55,7 @@
         android:paddingBottom="5dp"
         android:text="OMV"
         android:textColor="@color/lightgrey"
-        android:textSize="16dp"
+        android:textSize="20dp"
         android:textStyle="bold" />
 
     <TextView
