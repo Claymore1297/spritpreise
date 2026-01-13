@@ -24,6 +24,13 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import org.woheller69.spritpreise.R;
 import org.woheller69.spritpreise.activities.CityGasPricesActivity;
@@ -39,15 +46,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import static org.woheller69.spritpreise.database.SQLiteHelper.getWidgetCityID;
-
 import static org.woheller69.spritpreise.services.UpdateDataWorker.KEY_SKIP_UPDATE_INTERVAL;
 
 public class Widget extends AppWidgetProvider {
@@ -72,7 +72,11 @@ public class Widget extends AppWidgetProvider {
                     .setInputData(data)
                     .build();
 
-            WorkManager.getInstance(context).enqueue(request);
+            WorkManager.getInstance(context).enqueueUniqueWork(
+                "update_city_" + cityID,
+                ExistingWorkPolicy.KEEP,
+                request
+            );
 
         }
     }
