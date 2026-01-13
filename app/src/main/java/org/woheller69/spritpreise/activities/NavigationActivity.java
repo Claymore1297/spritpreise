@@ -22,7 +22,6 @@ import android.os.Looper;
 import android.view.MenuItem;
 
 
-import org.woheller69.freeDroidWarn.FreeDroidWarn;
 import org.woheller69.spritpreise.BuildConfig;
 import org.woheller69.spritpreise.R;
 import org.woheller69.spritpreise.preferences.AppPreferencesManager;
@@ -52,7 +51,6 @@ public class NavigationActivity extends AppCompatActivity implements OnNavigatio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE);
         mHandler = new Handler(Looper.getMainLooper());
         prefManager = new AppPreferencesManager(PreferenceManager.getDefaultSharedPreferences(this));
         if (prefManager.showStarDialog(this)) {
